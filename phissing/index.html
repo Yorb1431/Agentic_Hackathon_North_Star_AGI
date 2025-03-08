@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phishing Email Detector</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #e0f2fe;
+      font-family: 'Inter', sans-serif;
+    }
+    .container {
+      background: rgba(30, 41, 59, 0.9);
+      box-shadow: 0px 4px 15px rgba(0, 238, 255, 0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 20px;
+    }
+    .neon-text {
+      text-shadow: 0 0 5px #00eaff, 0 0 15px #00eaff;
+    }
+    .btn-glow {
+      transition: all 0.3s;
+    }
+    .btn-glow:hover {
+      box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff;
+    }
+    .result-box {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border-radius: 12px;
+      padding: 20px;
+      display: none;
+      transition: all 0.3s ease-in-out;
+    }
+    .label {
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      text-align: center;
+      width: 100%;
+    }
+    .green-label { background: #166534; color: white; }
+    .red-label { background: #7f1d1d; color: white; }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+  <div class="container w-full max-w-3xl p-6 shadow-lg">
+    <h1 class="text-4xl font-bold text-center neon-text">🔍 Phishing Email Detector</h1>
+    <p class="text-center text-gray-400 mb-6">Analyze an email for phishing attempts.</p>
+    
+    <textarea id="emailInput" class="w-full p-4 bg-gray-800 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" rows="6" placeholder="Paste email content here..."></textarea>
+    
+    <button id="analyzeBtn" class="w-full mt-4 bg-blue-500 text-white py-3 rounded-lg btn-glow hover:bg-blue-600 transition">Analyze</button>
+    
+    <div id="result" class="result-box mt-6 shadow-lg">
+      <h2 class="text-3xl font-bold flex items-center">
+        <span id="statusIcon" class="mr-2"></span> 
+        <span id="statusText"></span>
+      </h2>
+      <p class="text-lg text-gray-400 mt-2">Phishing Score: <span id="score">0%</span></p>
+
+      <h3 class="text-lg font-semibold mt-4">Warnings:</h3>
+      <ul id="warnings" class="text-red-400 list-disc pl-5"></ul>
+
+      <h3 class="text-lg font-semibold mt-4">Analysis Details:</h3>
+      <div class="grid grid-cols-2 gap-3 mt-3">
+        <div class="label green-label" id="linksStatus">Suspicious Links: Not Detected</div>
+        <div class="label green-label" id="infoStatus">Sensitive Info Requests: Not Detected</div>
+        <div class="label red-label" id="urgencyStatus">Urgency Language: Detected</div>
+        <div class="label green-label" id="spellingStatus">Grammar Spelling Issues: Not Detected</div>
+        <div class="label green-label" id="senderStatus">Suspicious Sender: Not Detected</div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.getElementById("analyzeBtn").addEventListener("click", () => {
+      const email = document.getElementById("emailInput").value.toLowerCase();
+      let score = 0;
+      let urgencyDetected = false;
+
+      const suspiciousKeywords = ["urgent", "immediately", "password", "verify", "bank", "paypal"];
+      suspiciousKeywords.forEach(word => {
+        if (email.includes(word)) {
+          score++;
+          urgencyDetected = true;
+        }
+      });
+
+      const resultBox = document.getElementById("result");
+      const statusText = document.getElementById("statusText");
+
+      if (score > 2) {
+        statusText.innerHTML = "🚨 Phishing Detected!";
+        resultBox.className = "result-box bg-red-800";
+      } else if (score > 0) {
+        statusText.innerHTML = "⚠️ Suspicious Email";
+        resultBox.className = "result-box bg-yellow-700";
+      } else {
+        statusText.innerHTML = "✅ Likely Safe";
+        resultBox.className = "result-box bg-green-700";
+      }
+
+      document.getElementById("score").textContent = `${score * 25}%`;
+
+      document.getElementById("warnings").innerHTML = urgencyDetected 
+        ? `<li>🔴 Uses urgent language</li>` 
+        : "";
+
+      document.getElementById("urgencyStatus").className = urgencyDetected ? "label red-label" : "label green-label";
+      document.getElementById("urgencyStatus").innerHTML = urgencyDetected ? "Urgency Language: Detected" : "Urgency Language: Not Detected";
+
+      resultBox.style.display = "block";
+    });
+  </script>
+</body>
+</html>
