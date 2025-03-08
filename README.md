@@ -14,7 +14,7 @@ To set up the project, follow these steps:
 
 1. **Clone the Repository**
    ```sh
-   git clone https://github.com/YOUR-REPO/Agentic_Hackathon_North_Star_AGI.git](https://github.com/Yorb1431/Agentic_Hackathon_North_Star_AGI.git)
+   git clone https://github.com/Yorb1431/Agentic_Hackathon_North_Star_AGI.git
    cd Agentic_Hackathon_North_Star_AGI
    ```
 
